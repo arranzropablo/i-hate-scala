@@ -123,6 +123,5 @@ object Notes extends App{
   //and I decide to add a Dog
   //then the list of cats will become a list of animals because the method add accepts supertypes of cat (i.e. Dog bc its an Animal)
 
-
-
+  
 }

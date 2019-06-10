@@ -15,7 +15,7 @@ abstract class MyList[+A] {
 
 }
 
-object EmptyList extends MyList[Nothing] {
+case object EmptyList extends MyList[Nothing] {
 
   //As we want to do this generic we can use Nothing as substitute of any type
   override def head: Nothing = throw new NoSuchElementException
@@ -24,7 +24,7 @@ object EmptyList extends MyList[Nothing] {
 
   override def isEmpty: Boolean = true
 
-  override def add[B >: Nothing](elem: B): MyList[B] = new List[B](elem, EmptyList)
+  override def add[B >: Nothing](elem: B): MyList[B] = List[B](elem, EmptyList)
 
   override def toString: String = ""
 
@@ -37,7 +37,7 @@ object EmptyList extends MyList[Nothing] {
   override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
 
-class List[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class List[+A](h: A, t: MyList[A]) extends MyList[A] {
 
   override def head: A = h
 
@@ -45,17 +45,17 @@ class List[+A](h: A, t: MyList[A]) extends MyList[A] {
 
   override def isEmpty: Boolean = false
 
-  override def add[B >: A](elem: B): MyList[B] = new List(elem, this)
+  override def add[B >: A](elem: B): MyList[B] = List(elem, this)
 
   override def toString: String = if (tail.isEmpty) head.toString else s"$head, ${tail.toString}"
 
-  override def map[B](transformer: MyTransformer[A, B]): MyList[B] = new List(transformer.transform(head), tail.map(transformer))
+  override def map[B](transformer: MyTransformer[A, B]): MyList[B] = List(transformer.transform(head), tail.map(transformer))
 
-  override def filter(filter: MyPredicate[A]): MyList[A] = if (filter.test(head)) new List(head, tail.filter(filter)) else tail.filter(filter)
+  override def filter(filter: MyPredicate[A]): MyList[A] = if (filter.test(head)) List(head, tail.filter(filter)) else tail.filter(filter)
 
   override def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B] = transformer.transform(head) ++ tail.flatMap(transformer)
 
-  override def ++[B >: A](list: MyList[B]): MyList[B] = new List(head, tail ++ list)
+  override def ++[B >: A](list: MyList[B]): MyList[B] = List(head, tail ++ list)
 }
 
 object ListTest extends App {
